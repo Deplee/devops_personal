@@ -1,10 +1,9 @@
-
 # # Import the Redis client
-
+#gitlab.lcgs.ru/devops/jenkins/ssh-agent-nix-ansible
 import redis
 import requests
 import json
-
+import os
 
 class script:
 
@@ -17,10 +16,16 @@ class script:
     post_data2 = redisClient.hget(hashName,"Comment")
     post_data3 = redisClient.hget(hashName,"UploadOn")
     key = "TemplateName"
-    
+    dockerNameTag = 'david-tst:latest'
+    cmd_commit = 'docker commit minio gitlab.lcgs.ru/devops/jenkins/' + dockerNameTag
+    cmd_push = 'docker push gitlab.lcgs.ru/devops/jenkins/' + dockerNameTag
     if (redisClient.hexists(hashName,key) == True):
+        # # Commit docker container
+        os.system(cmd_commit)
+        # # Push image to container registry
+        os.system(cmd_push)
         # # Text formatting
-        text = "\nKey_1: " + "**" + post_data1 + "**" + " " + " \nKey_2: " + " " + "**" + post_data2 + "**" + " " + " \nKey_3: " + " " + "**" + post_data3 + "**" 
+        text = "\nKey_1: " + "**" + post_data1 + "**" + " " + " \nKey_2: " + " " + "**" + post_data2 + "**" + " " + " \nKey_3: " + " " + "**" + post_data3 + "**" + "\nContainer name: " + "**" + dockerNameTag + "**"
         # # Get all keys from hashmap
         all_keys = list(redisClient.hgetall(hashName).keys())
         # # Delete hashmap & keys
@@ -32,8 +37,8 @@ class script:
         
     # # Rocket.Chat post msg function
     def rocket_notify(self):
-        data = {
-                            "channel": "#devops-tst",
+        data =          {
+                            "channel": "#dev-tst",
                             "alias": "TST-redis-notify",
                             "avatar": "https://icon-icons.com/downloadimage.php?id=146368&root=2415/PNG/128/&file=redis_original_logo_icon_146368.png",
                             "text": self.text,
@@ -50,8 +55,8 @@ class script:
         print("Status Code", response.status_code)
         print("JSON Response ", response.json())
 
+if __name__ == "__main__":
 
-
-t = script()
-t.rocket_notify()
+    t = script()
+    t.rocket_notify()
 
