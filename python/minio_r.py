@@ -4,52 +4,74 @@ import redis
 import requests
 import json
 import os
+import docker
+from pprint import pprint
+
+
+
 
 class script:
 
     # # Create a redis client
     redisClient = redis.StrictRedis(host='127.0.0.1',port=6379,db=0,charset="utf-8", decode_responses=True)
+
     # # Set redis hashmap name
-    hashName = "Lime_Templates_IsDirty"
-    # # Set redis keys
-    post_data1 = redisClient.hget(hashName,"TemplateName")
-    post_data2 = redisClient.hget(hashName,"Comment")
-    post_data3 = redisClient.hget(hashName,"UploadOn")
-    key = "TemplateName"
-    dockerNameTag = 'david-tst:latest'
-    cmd_commit = 'docker commit minio gitlab.lcgs.ru/devops/jenkins/' + dockerNameTag
-    cmd_push = 'docker push gitlab.lcgs.ru/devops/jenkins/' + dockerNameTag
+    hashName = "name:name"
+
+    # # Save redis keys in variables
+    redis_data = redisClient.hget(hashName,"data")
+    key = "data"
+
+
+    # # Set docker variables & login
+    dockerNameTag = 'tag:latest'
+    client = docker.from_env()
+    client.login(username='*user*', password=None, email=None,
+                        registry='https://url', dockercfg_path='/path/to/config.json')
+    cmd_commit = 'docker commit *name* *tag+url*' + dockerNameTag
+
+    # # Parse JSON
+    json_data = json.loads(redis_data)
+    count = len(json_data)
     if (redisClient.hexists(hashName,key) == True):
-        # # Commit docker container
-        os.system(cmd_commit)
-        # # Push image to container registry
-        os.system(cmd_push)
+
+        # # Commit container
+        #os.system(cmd_commit)
+        # # Push container
+        # for line in client.images.push('gitlab.lcgs.ru/devops/jenkins/' + dockerNameTag, stream=True, decode=True):
+        #     print(line)
+
         # # Text formatting
-        text = "\nKey_1: " + "**" + post_data1 + "**" + " " + " \nKey_2: " + " " + "**" + post_data2 + "**" + " " + " \nKey_3: " + " " + "**" + post_data3 + "**" + "\nContainer name: " + "**" + dockerNameTag + "**"
+        list_text = []
+        for k in range(count):
+            list_text.append("\n**Template**: **%s** \nComment: %s \nUpload: %s\n" % (json_data[k]['Template'],json_data[k]['Comment'],json_data[k]['UploadOn']))
+
+        # # Convert from list text to string text
+        string_text =(" ".join(list_text))
         # # Get all keys from hashmap
         all_keys = list(redisClient.hgetall(hashName).keys())
+
         # # Delete hashmap & keys
         redisClient.hdel(hashName, *all_keys)
         print("\nHashmap" + " " + hashName + " "  + "removed \n")
     else:
         # # Text formatting
         text = "\n Hashmap" + " " + "**" + hashName +"**" + " "  + "not exists"
-        
+
     # # Rocket.Chat post msg function
     def rocket_notify(self):
         data =          {
-                            "channel": "#dev-tst",
-                            "alias": "TST-redis-notify",
+                            "channel": "#channel",
+                            "alias": "*name",
                             "avatar": "https://icon-icons.com/downloadimage.php?id=146368&root=2415/PNG/128/&file=redis_original_logo_icon_146368.png",
-                            "text": self.text,
+                            "text": self.string_text,
                             "color": "#C6201E",
                         }
-        chat_url = "https://chat.lime-zaim.ru:30500/api/v1/chat.postMessage"
-        #chat_url = "http://192.168.1.207:8080"
+        chat_url = "https://url:port/api/v1/chat.postMessage"
         print (chat_url)
         headers = { 'Content-Type' : 'application/json',
-        'X-Auth-Token': 'k5tDfe9qBOde2m3HwF9THRQLUi2_Ms1wGdMhQ-pD3OA',
-        'X-User-Id': 'xJ9qFMvZmMqp9xQ9S'}
+        'X-Auth-Token': '*',
+        'X-User-Id': '*'}
         response = requests.post(chat_url, headers=headers, json=data)
 
         print("Status Code", response.status_code)
