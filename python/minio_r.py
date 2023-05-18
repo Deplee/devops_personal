@@ -36,10 +36,10 @@ class script:
     if (redisClient.hexists(hashName,key) == True):
 
         # # Commit container
-        #os.system(cmd_commit)
+        os.system(cmd_commit)
         # # Push container
-        # for line in client.images.push('gitlab.lcgs.ru/devops/jenkins/' + dockerNameTag, stream=True, decode=True):
-        #     print(line)
+         for line in client.images.push('gitlab.lcgs.ru/devops/jenkins/' + dockerNameTag, stream=True, decode=True):
+             print(line)
 
         # # Text formatting
         list_text = []
