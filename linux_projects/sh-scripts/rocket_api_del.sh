@@ -1,8 +1,5 @@
 #!/bin/bash
 
-
-# in rocket.chat role need rules to "clean history" param for delete msgs and bot in channel/room !!
-
 #set -x
 
 # date diffirence
@@ -77,7 +74,7 @@ main(){
 	curl -H "X-Auth-Token: *" \
 	-H "X-User-Id: *" \
 	-H "Content-type: application/json" \
-	https://ip:port/api/v1/rooms.cleanHistory \
+	https://ip:portapi/v1/rooms.cleanHistory \
 	-d '{ "roomName": "'"$channelName"'","latest": "'"$latestDate"'", "oldest": "'"$oldestDate"'"}'
 	#-d '{ "roomName": "'"$channelName"'","latest": "'"$latestDate"'", "oldest": "2023-01-01"}'
 
@@ -86,4 +83,3 @@ main(){
 
 
 parse_params "$@"
-
