@@ -22,7 +22,7 @@ vim /etc/squid/squid.conf
 ```
 
 ```
-acl homenet src 95.104.186.25 # test
+acl homenet src 31.49.104.15 # test
 access allow homenet
 http_port 3128
 http_access deny all
