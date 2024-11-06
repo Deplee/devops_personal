@@ -21,9 +21,9 @@ usage(){
 
         Examples:
 
-        Help: "${BASH_SOURCE[0]}" -h || "${BASH_SOURCE[0]}" --help
+        Help: ${BASH_SOURCE[0]} -h || ${BASH_SOURCE[0]} --help
 
-        Run script: ./${BASH_SOURCE[0]} -a || ./${BASH_SOURCE[0]} --all
+        Run script: ${BASH_SOURCE[0]} -a || ${BASH_SOURCE[0]} --all
 
 EOF
 }
