@@ -23,7 +23,7 @@ usage(){
 
         Help: "${BASH_SOURCE[0]}" -h || "${BASH_SOURCE[0]}" --help
 
-        Clean chat data: "${BASH_SOURCE[0]}" -c dev-tst -d 30 || "${BASH_SOURCE[0]}" --channel dev-tst --days 30
+        Run script: ./${BASH_SOURCE[0]} -a || ./${BASH_SOURCE[0]} --all
 
 EOF
 }
