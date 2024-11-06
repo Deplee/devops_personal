@@ -39,6 +39,7 @@ sudo apt install -y openssh-server \
                     wget \
                     htop \
                     git \
+                    docker.io \
                     build-essential
 write-log "Installing packages"
 }
