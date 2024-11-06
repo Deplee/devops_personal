@@ -40,6 +40,7 @@ sudo apt install -y openssh-server \
                     htop \
                     git \
                     docker.io \
+                    docker-compose \
                     build-essential
 write-log "Installing packages"
 }
