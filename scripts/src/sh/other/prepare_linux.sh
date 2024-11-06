@@ -54,7 +54,7 @@ curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stabl
     echo "deb [trusted=yes] http://ftp.de.debian.org/debian buster main" >>  /etc/apt/sources.list &&
     sudo apt update &&
     sudo apt install kubectx &&
-    sudo chown -R $USER:$USER ${LOGFILE}
+    sudo chown $USER:$USER ${LOGFILE}
 }
 
 parse_params(){
